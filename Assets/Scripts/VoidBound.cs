@@ -12,9 +12,9 @@ public class VoidBound : MonoBehaviour
             if (cRb != null)
             {
                 if (cRb.velocity.x > 0)
-                    col.transform.position -= shiftValue;
+                    col.transform.position -= new Vector3(shiftValue.x - col.transform.localScale.x, shiftValue.y);
                 else
-                    col.transform.position += shiftValue;
+                    col.transform.position += new Vector3(shiftValue.x - col.transform.localScale.x, shiftValue.y);
             }
         }
     }
