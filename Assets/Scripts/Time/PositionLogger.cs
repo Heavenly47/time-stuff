@@ -1,5 +1,6 @@
-﻿//Copyright (c) 2020 Benjamin Robinson - Heavenly47
+//Copyright (c) 2020 Benjamin Robinson - Heavenly47
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,9 @@ public class PositionLogger : MonoBehaviour
     [HideInInspector]
     public bool collected = false;
 
+    private bool onCD = false;
+    private Transform _player;
+
     Rigidbody2D rb;
 
     void Start()
@@ -25,6 +29,7 @@ public class PositionLogger : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         initialPosition = new TimeWaypoint(transform.position, transform.rotation, startVelocity);
         lastVelocity = startVelocity;
+        _player = GameObject.Find("Player").transform;
     }
 
     public void SetActive(int maxLogs)
@@ -92,11 +97,14 @@ public class PositionLogger : MonoBehaviour
 
     public void Rewind()
     {
-        if (!logActive)
+        if (!logActive && !onCD && !isCollectable)
         {
+            StartCoroutine(RewindCoolDown());
             int logCount = loggedPositions.Count - 1;
             if (logCount > 0)
             {
+                if ((_player.position.y > loggedPositions[logCount].position.y - transform.localScale.y && _player.position.y < loggedPositions[logCount].position.y + transform.localScale.y) && (_player.position.x > loggedPositions[logCount].position.x - transform.localScale.x / 2 && _player.position.x < loggedPositions[logCount].position.x + transform.localScale.x / 2))
+                    _player.Translate(new Vector2(0, ((loggedPositions[logCount].position.y + (transform.localScale.y / 2)) - (_player.position.y - (_player.localScale.y / 2)))));
                 transform.position = loggedPositions[logCount].position;
                 transform.rotation = loggedPositions[logCount].rotation;
                 lastVelocity = loggedPositions[logCount].velocity;
@@ -109,5 +117,12 @@ public class PositionLogger : MonoBehaviour
                 lastVelocity = initialPosition.velocity;
             }
         }
+    }
+
+    private IEnumerator RewindCoolDown()
+    {
+        onCD = true;
+        yield return new WaitForFixedUpdate();
+        onCD = false;
     }
 }
