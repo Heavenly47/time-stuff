@@ -186,17 +186,20 @@ public class PlayerController : MonoBehaviour
         //Time manipulation inputs
         if (canManipulate && !OptionHolder.paused)
         {
-            if (Input.GetButton("Freeze"))
-                TimeManager.FreezeAllObjects();
-            else if (Input.GetButtonUp("Freeze") && !Input.GetButton("Rewind"))
-                TimeManager.ResumeAllObjects();
+            if (TimeManager.timeRemaining > 0)
+            {
+                if (Input.GetButton("Freeze"))
+                    TimeManager.FreezeAllObjects();
+                else if (Input.GetButtonUp("Freeze") && !Input.GetButton("Rewind"))
+                    TimeManager.ResumeAllObjects();
 
-            if (Input.GetButtonDown("Rewind"))
-                TimeManager.FreezeAllObjects();
-            if (Input.GetButton("Rewind"))
-                TimeManager.RewindTime();
-            if (Input.GetButtonUp("Rewind"))
-                TimeManager.ResumeAllObjects();
+                if (Input.GetButtonDown("Rewind"))
+                    TimeManager.FreezeAllObjects();
+                if (Input.GetButton("Rewind"))
+                    TimeManager.RewindTime();
+                if (Input.GetButtonUp("Rewind"))
+                    TimeManager.ResumeAllObjects();
+            }
 
             if (TimeManager.timeManipulated)
             {
